@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ecossistema Flow</title>
+<style>
+  :root{--bg:#05090a;--card:#0d1417;--t1:#e8f0ee;--t2:#8aa;--acc:#f97316}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    background:var(--bg);color:var(--t1);min-height:100vh;
+    display:flex;flex-direction:column;align-items:center;padding:48px 20px}
+  h1{font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
+  p.sub{color:var(--t2);margin:0 0 32px}
+  .grid{display:grid;gap:14px;width:100%;max-width:420px}
+  a.app{display:flex;align-items:center;gap:14px;text-decoration:none;
+    background:var(--card);border:1px solid #1c2a2e;border-radius:16px;
+    padding:16px 18px;color:var(--t1);transition:.15s}
+  a.app:hover{border-color:var(--acc);transform:translateY(-2px)}
+  a.app .name{font-weight:600;font-size:1.05rem}
+  a.app .desc{color:var(--t2);font-size:.85rem}
+  .dot{width:10px;height:10px;border-radius:50%;background:var(--acc);flex:0 0 auto}
+</style>
+</head>
+<body>
+  <h1>Ecossistema Flow</h1>
+  <p class="sub">Apps instaláveis (PWA) — abra e adicione à tela inicial.</p>
+  <div class="grid">
+    <a class="app" href="finflow/">
+      <span class="dot"></span>
+      <span>
+        <div class="name">FinFlow</div>
+        <div class="desc">Controle de despesas mensais</div>
+      </span>
+    </a>
+  </div>
+</body>
+</html>
