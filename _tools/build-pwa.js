@@ -61,9 +61,9 @@ const HEAD = `
   #topbar .tbi{flex:1 1 auto;min-width:0}
   #topbar .tbt{font-size:15px !important;line-height:1.2;white-space:normal !important}
   #topbar .tbs,#topbar .tbsub,#topbar .secsub{font-size:11px !important;line-height:1.25;white-space:normal !important}
-  /* todas as grades (por classe e inline) viram coluna única */
+  /* grades viram coluna única — exceto teclados (repeat(4)) e calendários (repeat(7)) */
   #cnt .kgrid,#cnt .cgrid,#cnt .fg2,#cnt .fg3,#cnt .dp-grid,
-  #cnt [style*="grid-template-columns"]{grid-template-columns:1fr !important}
+  #cnt [style*="grid-template-columns"]:not([style*="repeat(4"]):not([style*="repeat(7"]){grid-template-columns:1fr !important}
   /* impede estouro horizontal */
   #main,#cnt{overflow-x:hidden !important;max-width:100vw}
   #cnt .kval{font-size:18px !important;white-space:normal !important;word-break:break-word}
@@ -96,6 +96,15 @@ if (!html.includes('id="flowBackdrop"')) {
 const SCRIPT = `
 <!-- FLOW-PWA-JS:start -->
 <script>
+// Em telas estreitas, oculta rótulos de valor sobre os gráficos (evita sobreposição).
+// O valor continua acessível ao tocar na barra/ponto. Reaparece em telas largas (ex.: horizontal).
+try{
+  if(window.Chart){
+    var _p=(Chart.defaults.plugins=Chart.defaults.plugins||{});
+    var _dl=(_p.datalabels=_p.datalabels||{});
+    _dl.display=function(ctx){return (ctx.chart && ctx.chart.width||0) > 460;};
+  }
+}catch(e){}
 function flowToggleMenu(){var s=document.getElementById('sb'),b=document.getElementById('flowBackdrop');
   if(!s)return;s.classList.toggle('open');if(b)b.classList.toggle('show');}
 function flowCloseMenu(){var s=document.getElementById('sb'),b=document.getElementById('flowBackdrop');
