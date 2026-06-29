@@ -53,6 +53,24 @@ const HEAD = `
   #flowBackdrop{display:block;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1500;
     opacity:0;visibility:hidden;transition:opacity .25s}
   #flowBackdrop.show{opacity:1;visibility:visible}
+
+  /* --- conteúdo responsivo --- */
+  /* topbar cresce conforme o texto (evita sobreposição) e fica opaco */
+  #topbar{height:auto !important;min-height:54px !important;flex-wrap:wrap;
+    padding:8px 12px !important;gap:8px;background:${cfg.theme} !important;backdrop-filter:none !important}
+  #topbar .tbi{flex:1 1 auto;min-width:0}
+  #topbar .tbt{font-size:15px !important;line-height:1.2;white-space:normal !important}
+  #topbar .tbs,#topbar .tbsub,#topbar .secsub{font-size:11px !important;line-height:1.25;white-space:normal !important}
+  /* todas as grades (por classe e inline) viram coluna única */
+  #cnt .kgrid,#cnt .cgrid,#cnt .fg2,#cnt .fg3,#cnt .dp-grid,
+  #cnt [style*="grid-template-columns"]{grid-template-columns:1fr !important}
+  /* impede estouro horizontal */
+  #main,#cnt{overflow-x:hidden !important;max-width:100vw}
+  #cnt .kval{font-size:18px !important;white-space:normal !important;word-break:break-word}
+  #cnt canvas{max-width:100% !important;height:auto !important}
+  /* tabelas mais compactas e roláveis */
+  #cnt table{width:100% !important;font-size:12px;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  #cnt th,#cnt td{padding:6px 8px !important}
 }
 </style>
 <!-- FLOW-PWA:end -->
