@@ -1,0 +1,13 @@
+{
+  "name": "FinFlow · Controle de Despesas Mensais",
+  "short": "FinFlow",
+  "slug": "finflow",
+  "theme": "#05090a",
+  "icon": "icons/finflow-192.png",
+  "libs": {
+    "https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js": "libs/chart.umd.min.js",
+    "https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js": "libs/xlsx.full.min.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js": "libs/papaparse.min.js",
+    "https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js": "libs/chartjs-plugin-datalabels.min.js"
+  }
+}
