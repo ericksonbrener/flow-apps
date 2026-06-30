@@ -22,8 +22,15 @@ for (const [url, local] of Object.entries(cfg.libs || {})) {
   html = html.split(url).join(local);
 }
 
+// Bloco opcional de backend (Supabase): config + libs de auth/sync.
+const SB_HEAD = cfg.supabase ? `
+<script>window.FLOW_SUPABASE=${JSON.stringify(cfg.supabase)};</script>
+<script src="libs/supabase.min.js"></script>
+` : '';
+const SB_BODY = cfg.supabase ? `<script src="flow-auth.js"></script>\n` : '';
+
 // 2) Bloco PWA + CSS responsivo (injeta uma vez, antes de </head>)
-const HEAD = `
+const HEAD = SB_HEAD + `
 <!-- FLOW-PWA:start -->
 <script src="libs/jspdf.umd.min.js"></script>
 <script src="libs/html2canvas.min.js"></script>
@@ -208,6 +215,11 @@ if('serviceWorker' in navigator){window.addEventListener('load',function(){
 `;
 if (!html.includes('FLOW-PWA-JS:start')) {
   html = html.replace('</body>', SCRIPT + '</body>');
+}
+
+// 6) Backend: carrega flow-auth.js por último (precisa de sv/initS já definidos)
+if (SB_BODY && !html.includes('flow-auth.js')) {
+  html = html.replace('</body>', SB_BODY + '</body>');
 }
 
 fs.writeFileSync(file, html);
