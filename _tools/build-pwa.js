@@ -61,6 +61,8 @@ const HEAD = `
   #topbar{height:auto !important;min-height:54px !important;flex-wrap:wrap;
     padding:8px 12px !important;gap:8px;background:${cfg.theme} !important;backdrop-filter:none !important}
   #topbar .tbi{flex:1 1 auto;min-width:0}
+  /* área de ações quebra linha p/ não cortar botões (ex.: Imprimir + Compartilhar PDF) */
+  #topbar .tba{flex-wrap:wrap;justify-content:flex-start;gap:8px}
   #topbar .tbt{font-size:15px !important;line-height:1.2;white-space:normal !important}
   #topbar .tbs,#topbar .tbsub,#topbar .secsub{font-size:11px !important;line-height:1.25;white-space:normal !important}
   /* grades viram coluna única — exceto teclados (repeat(4)) e calendários (repeat(7)) */
