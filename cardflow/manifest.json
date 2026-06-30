@@ -1,0 +1,38 @@
+{
+  "name": "CardFlow · Gestão de Cartões de Crédito",
+  "short_name": "CardFlow",
+  "description": "Gestão de cartões de crédito do ecossistema Flow.",
+  "lang": "pt-BR",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#05090a",
+  "theme_color": "#05090a",
+  "icons": [
+    {
+      "src": "icons/cardflow-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/cardflow-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/cardflow-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/cardflow-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
