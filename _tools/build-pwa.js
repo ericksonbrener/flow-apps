@@ -43,9 +43,15 @@ const HEAD = SB_HEAD + `
 <link rel="apple-touch-icon" href="${cfg.icon}">
 <style id="flow-responsive">
 #flowHamb{display:none;align-items:center;justify-content:center;width:38px;height:38px;
-  flex:0 0 auto;margin-right:10px;background:var(--bg3,#1a2228);
+  flex:0 0 auto;margin-right:6px;background:var(--bg3,#1a2228);
   border:1px solid var(--gbb,#2a2a2a);border-radius:10px;color:var(--t1,#fff);cursor:pointer}
 #flowHamb svg{width:20px;height:20px;stroke-width:2.2}
+#flowHub{display:none;align-items:center;justify-content:center;width:38px;height:38px;
+  flex:0 0 auto;margin-right:10px;background:var(--bg3,#1a2228);
+  border:1px solid var(--gbb,#2a2a2a);border-radius:10px;color:var(--t1,#fff);
+  text-decoration:none;opacity:.75}
+#flowHub:hover{opacity:1;border-color:#f97316}
+#flowHub svg{width:18px;height:18px}
 #flowBackdrop{display:none}
 @media (max-width:820px){
   html,body{overflow:auto !important;height:auto !important}
@@ -59,6 +65,7 @@ const HEAD = SB_HEAD + `
   #topbar{position:sticky;top:0;z-index:100;padding:0 14px !important}
   #topbar .tbi{flex:1 1 auto;min-width:0}
   #flowHamb{display:flex}
+  #flowHub{display:flex}
   #flowBackdrop{display:block;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1500;
     opacity:0;visibility:hidden;transition:opacity .25s}
   #flowBackdrop.show{opacity:1;visibility:visible}
@@ -105,11 +112,15 @@ if (!html.includes('FLOW-PWA:start')) {
   html = html.replace('</head>', HEAD + '</head>');
 }
 
-// 3) Botão hambúrguer no topbar (1ª posição)
+// 3) Botão hambúrguer + botão Hub no topbar (1ª posição)
 if (!html.includes('id="flowHamb"')) {
   html = html.replace('<div id="topbar">',
-    '<div id="topbar"><button id="flowHamb" onclick="flowToggleMenu()" aria-label="Menu">' +
-    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>');
+    '<div id="topbar">' +
+    '<button id="flowHamb" onclick="flowToggleMenu()" aria-label="Menu">' +
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>' +
+    '<a id="flowHub" href="../" aria-label="Voltar ao Hub" title="Ecossistema Flow">' +
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>' +
+    '</a>');
 }
 
 // 4) Backdrop logo após <div id="app">
