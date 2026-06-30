@@ -3,36 +3,279 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#05090a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Flow Hub">
 <title>Ecossistema Flow</title>
 <style>
-  :root{--bg:#05090a;--card:#0d1417;--t1:#e8f0ee;--t2:#8aa;--acc:#f97316}
-  *{box-sizing:border-box}
-  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-    background:var(--bg);color:var(--t1);min-height:100vh;
-    display:flex;flex-direction:column;align-items:center;padding:48px 20px}
-  h1{font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
-  p.sub{color:var(--t2);margin:0 0 32px}
-  .grid{display:grid;gap:14px;width:100%;max-width:420px}
-  a.app{display:flex;align-items:center;gap:14px;text-decoration:none;
-    background:var(--card);border:1px solid #1c2a2e;border-radius:16px;
-    padding:16px 18px;color:var(--t1);transition:.15s}
-  a.app:hover{border-color:var(--acc);transform:translateY(-2px)}
-  a.app .name{font-weight:600;font-size:1.05rem}
-  a.app .desc{color:var(--t2);font-size:.85rem}
-  .dot{width:10px;height:10px;border-radius:50%;background:var(--acc);flex:0 0 auto}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background:#05090a;color:#e8eef0}
+
+/* ── AUTH GATE ── */
+#gate{display:flex;align-items:center;justify-content:center;
+  min-height:100vh;padding:20px;
+  background:radial-gradient(1200px 600px at 50% -10%,#0d1b1e,#05090a)}
+#card{width:100%;max-width:380px;background:#0e1518;border:1px solid #1d2a2f;
+  border-radius:18px;padding:28px 24px;box-shadow:0 24px 70px rgba(0,0,0,.55)}
+.brand{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#f97316;font-weight:700;margin-bottom:12px}
+.title{font-size:23px;font-weight:700;color:#fff;margin-bottom:4px}
+.sub{font-size:13px;color:#9fb0b5;line-height:1.4;margin-bottom:20px}
+label{display:block;font-size:12px;color:#9fb0b5;margin:12px 0 5px}
+input{width:100%;padding:12px 14px;border-radius:11px;border:1px solid #26343a;
+  background:#0a1013;color:#fff;font-size:15px;outline:none}
+input:focus{border-color:#f97316}
+.msg{min-height:18px;margin-top:12px;font-size:13px;color:#fbbf24;line-height:1.35}
+.msg.ok{color:#34d399}
+.btn{width:100%;margin-top:18px;padding:13px;border:none;border-radius:11px;cursor:pointer;
+  background:#f97316;color:#1a0f06;font-size:15px;font-weight:700;transition:opacity .15s}
+.btn:disabled{opacity:.55;cursor:default}
+.links{display:flex;justify-content:space-between;margin-top:16px}
+.lnk{color:#60a5fa;font-size:13px;text-decoration:none;background:none;border:none;cursor:pointer;padding:0}
+.lnk:hover{text-decoration:underline}
+.lgpd{margin-top:18px;padding-top:14px;border-top:1px solid #1d2a2f;
+  font-size:11px;color:#6f8086;line-height:1.45}
+
+/* ── HUB (pós-login) ── */
+#hub{display:none;min-height:100vh;flex-direction:column}
+.hub-top{display:flex;align-items:center;justify-content:space-between;
+  padding:18px 24px;border-bottom:1px solid #1a2228}
+.hub-logo{font-size:13px;font-weight:700;color:#f97316;letter-spacing:.1em;text-transform:uppercase}
+.hub-user{font-size:12px;color:#6f8086}
+.hub-out{background:none;border:1px solid #26343a;border-radius:8px;color:#9fb0b5;
+  font-size:12px;padding:6px 12px;cursor:pointer;margin-left:12px}
+.hub-out:hover{border-color:#f97316;color:#f97316}
+.hub-body{flex:1;display:flex;flex-direction:column;align-items:center;
+  padding:40px 20px 60px;gap:12px}
+.hub-title{font-size:22px;font-weight:700;color:#fff;margin-bottom:8px;text-align:center}
+.hub-sub{font-size:14px;color:#9fb0b5;margin-bottom:32px;text-align:center}
+.apps{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:16px;width:100%;max-width:820px}
+.app-card{background:#0e1518;border:1px solid #1d2a2f;border-radius:16px;
+  padding:24px 20px;cursor:pointer;text-decoration:none;color:inherit;
+  transition:border-color .2s,box-shadow .2s;display:flex;flex-direction:column;gap:10px}
+.app-card:hover{border-color:#f97316;box-shadow:0 8px 32px rgba(249,115,22,.12)}
+.app-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center}
+.app-icon svg{width:26px;height:26px}
+.app-name{font-size:17px;font-weight:700;color:#fff}
+.app-desc{font-size:13px;color:#9fb0b5;line-height:1.4}
+.app-go{margin-top:6px;font-size:12px;color:#f97316;font-weight:600;letter-spacing:.04em}
+.coming{opacity:.45;cursor:default;pointer-events:none}
+.coming .app-go{color:#6f8086}
+.badge{display:inline-block;font-size:10px;font-weight:700;background:#1d2a2f;
+  color:#6f8086;border-radius:6px;padding:2px 7px;letter-spacing:.06em;margin-left:6px;vertical-align:middle}
+
+@media(max-width:480px){
+  #card{padding:22px 18px}
+  .hub-top{padding:14px 16px}
+  .hub-body{padding:28px 14px 40px}
+  .hub-title{font-size:19px}
+}
 </style>
 </head>
 <body>
-  <h1>Ecossistema Flow</h1>
-  <p class="sub">Apps instaláveis (PWA) — abra e adicione à tela inicial.</p>
-  <div class="grid">
-    <a class="app" href="finflow/">
-      <span class="dot"></span>
-      <span>
-        <div class="name">FinFlow</div>
-        <div class="desc">Controle de despesas mensais</div>
-      </span>
-    </a>
+
+<!-- ── TELA DE LOGIN ── -->
+<div id="gate">
+  <div id="card">
+    <div class="brand">Ecossistema Flow</div>
+    <h1 class="title" id="authTitle">Entrar</h1>
+    <p class="sub" id="authSub">Acesse sua conta para usar os apps Flow.</p>
+
+    <label id="emailLabel">E-mail</label>
+    <input id="email" type="email" autocomplete="email" inputmode="email" placeholder="voce@exemplo.com">
+
+    <label>Senha</label>
+    <input id="pass" type="password" autocomplete="current-password" placeholder="••••••••">
+
+    <div class="msg" id="msg"></div>
+    <button class="btn" id="btn" onclick="submit()">Entrar</button>
+
+    <div class="links" id="authLinks">
+      <button class="lnk" id="toggle" onclick="toggleMode()">Criar conta</button>
+      <button class="lnk" onclick="forgot()">Esqueci a senha</button>
+    </div>
+    <div class="lgpd" id="lgpd"></div>
   </div>
+</div>
+
+<!-- ── HUB (pós-login) ── -->
+<div id="hub">
+  <div class="hub-top">
+    <span class="hub-logo">Ecossistema Flow</span>
+    <div style="display:flex;align-items:center">
+      <span class="hub-user" id="hubEmail"></span>
+      <button class="hub-out" onclick="signOut()">Sair</button>
+    </div>
+  </div>
+  <div class="hub-body">
+    <h2 class="hub-title">Seus apps Flow</h2>
+    <p class="hub-sub">Escolha o app para abrir. Seus dados sincronizam automaticamente.</p>
+    <div class="apps">
+
+      <!-- FinFlow -->
+      <a class="app-card" href="finflow/">
+        <div class="app-icon" style="background:#1a1208">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2">
+            <path d="M3 17l4-8 4 5 3-3 4 6"/><path d="M3 20h18"/>
+          </svg>
+        </div>
+        <div class="app-name">FinFlow</div>
+        <div class="app-desc">Controle de despesas mensais, orçamento por grupo e relatório financeiro.</div>
+        <div class="app-go">Abrir →</div>
+      </a>
+
+      <!-- CardFlow -->
+      <a class="app-card coming" href="cardflow/">
+        <div class="app-icon" style="background:#0d1a18">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2">
+            <rect x="2" y="5" width="20" height="14" rx="3"/>
+            <path d="M2 10h20"/>
+          </svg>
+        </div>
+        <div class="app-name">CardFlow <span class="badge">Em breve</span></div>
+        <div class="app-desc">Gestão de cartões de crédito, faturas e limite disponível.</div>
+        <div class="app-go">Em breve</div>
+      </a>
+
+      <!-- BuyFlow -->
+      <a class="app-card coming" href="buyflow/">
+        <div class="app-icon" style="background:#0d1220">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2">
+            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 01-8 0"/>
+          </svg>
+        </div>
+        <div class="app-name">BuyFlow <span class="badge">Em breve</span></div>
+        <div class="app-desc">Lista de compras inteligente com controle de gastos por categoria.</div>
+        <div class="app-go">Em breve</div>
+      </a>
+
+    </div>
+  </div>
+</div>
+
+<script src="finflow/libs/supabase.min.js"></script>
+<script>
+var SB_URL = 'https://kzhbaxlkezgupwajtfyd.supabase.co';
+var SB_KEY = 'sb_publishable_f4ORDeEIi_DEzPUBnrKqQQ_bW_LLuDu';
+var sb = window.supabase.createClient(SB_URL, SB_KEY, {
+  auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}
+});
+
+var mode = 'in';
+
+function msg(t,ok){var m=document.getElementById('msg');m.textContent=t||'';m.className='msg'+(ok?' ok':'');}
+function busy(on){document.getElementById('btn').disabled=on;}
+
+function toggleMode(){
+  mode = mode==='in'?'up':'in';
+  document.getElementById('authTitle').textContent = mode==='in'?'Entrar':'Criar conta';
+  document.getElementById('authSub').textContent   = mode==='in'?'Acesse sua conta para usar os apps Flow.':'Cadastre-se para guardar seus dados com segurança.';
+  document.getElementById('btn').textContent       = mode==='in'?'Entrar':'Cadastrar';
+  document.getElementById('toggle').textContent    = mode==='in'?'Criar conta':'Já tenho conta';
+  document.getElementById('pass').autocomplete     = mode==='in'?'current-password':'new-password';
+  document.getElementById('lgpd').innerHTML        = mode==='up'
+    ? 'Ao criar a conta, seus dados ficam vinculados apenas ao seu e-mail e protegidos por isolamento por usuário (RLS). Usamos seu e-mail somente para autenticação. Você pode solicitar a exclusão a qualquer momento.'
+    : '';
+  msg('');
+}
+
+async function submit(){
+  var email=(document.getElementById('email').value||'').trim();
+  var pass=document.getElementById('pass').value||'';
+  if(!email||!pass){msg('Preencha e-mail e senha.');return;}
+  if(mode==='up'&&pass.length<6){msg('A senha precisa ter ao menos 6 caracteres.');return;}
+  busy(true);msg(mode==='up'?'Criando conta…':'Entrando…');
+  try{
+    var res;
+    if(mode==='up'){
+      res=await sb.auth.signUp({email:email,password:pass});
+      if(res.error)throw res.error;
+      if(!res.data.session){busy(false);msg('Conta criada! Confirme pelo link enviado ao seu e-mail e depois entre.',true);toggleMode();return;}
+    }else{
+      res=await sb.auth.signInWithPassword({email:email,password:pass});
+      if(res.error)throw res.error;
+    }
+    showHub(res.data.session);
+  }catch(e){busy(false);msg(traduzErro(e));}
+}
+
+async function forgot(){
+  var email=(document.getElementById('email').value||'').trim();
+  if(!email){msg('Digite seu e-mail acima para receber o link de recuperação.');return;}
+  busy(true);
+  try{
+    var res=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.href});
+    if(res.error)throw res.error;
+    msg('Enviamos um link de redefinição para '+email+'.',true);
+  }catch(e){msg(traduzErro(e));}
+  busy(false);
+}
+
+function traduzErro(e){
+  var m=(e&&e.message||'').toLowerCase();
+  if(m.indexOf('invalid login')>=0)return 'E-mail ou senha incorretos.';
+  if(m.indexOf('already registered')>=0||m.indexOf('already exists')>=0)return 'Este e-mail já tem conta. Use "Entrar".';
+  if(m.indexOf('email not confirmed')>=0)return 'Confirme seu e-mail pelo link enviado antes de entrar.';
+  if(m.indexOf('rate limit')>=0)return 'Muitas tentativas. Aguarde alguns minutos.';
+  return e&&e.message||'Erro inesperado.';
+}
+
+function showHub(session){
+  document.getElementById('gate').style.display='none';
+  document.getElementById('hub').style.display='flex';
+  document.getElementById('hubEmail').textContent=session&&session.user?session.user.email:'';
+}
+
+async function signOut(){
+  await sb.auth.signOut();
+  document.getElementById('hub').style.display='none';
+  document.getElementById('gate').style.display='flex';
+  document.getElementById('email').value='';
+  document.getElementById('pass').value='';
+  msg('');busy(false);
+}
+
+// Recuperação de senha vinda do link do e-mail
+sb.auth.onAuthStateChange(function(event,session){
+  if(event==='PASSWORD_RECOVERY'){
+    document.getElementById('gate').style.display='flex';
+    document.getElementById('hub').style.display='none';
+    document.getElementById('authTitle').textContent='Nova senha';
+    document.getElementById('authSub').textContent='Defina uma nova senha para sua conta.';
+    document.getElementById('btn').textContent='Salvar nova senha';
+    document.getElementById('email').style.display='none';
+    document.getElementById('emailLabel').style.display='none';
+    document.getElementById('pass').autocomplete='new-password';
+    document.getElementById('pass').value='';
+    document.getElementById('authLinks').style.display='none';
+    document.getElementById('btn').onclick=saveNewPass;
+  }
+});
+
+async function saveNewPass(){
+  var p=document.getElementById('pass').value||'';
+  if(p.length<6){msg('A senha precisa ter ao menos 6 caracteres.');return;}
+  busy(true);msg('Salvando…');
+  try{
+    var r=await sb.auth.updateUser({password:p});
+    if(r.error)throw r.error;
+    var s=await sb.auth.getSession();
+    msg('Senha alterada!',true);
+    setTimeout(function(){showHub(s.data.session);},800);
+  }catch(e){busy(false);msg(traduzErro(e));}
+}
+
+// Boot: verifica sessão existente
+(async function(){
+  var res=await sb.auth.getSession();
+  if(res.data&&res.data.session){showHub(res.data.session);}
+})();
+
+document.getElementById('pass').addEventListener('keydown',function(e){if(e.key==='Enter')submit();});
+</script>
 </body>
 </html>
