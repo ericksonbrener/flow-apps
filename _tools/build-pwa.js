@@ -72,6 +72,21 @@ const HEAD = `
   #cnt table{width:100% !important;font-size:12px;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
   #cnt th,#cnt td{padding:6px 8px !important}
 }
+
+/* === MODO HORIZONTAL (paisagem, telas baixas) === */
+@media (orientation:landscape) and (max-height:600px){
+  /* compacta cabeçalho e rodapé da sidebar p/ o menu respirar e rolar */
+  #sb .sbl{padding:10px 14px !important}
+  #sb .sbl > div:last-child > div:last-child{display:none !important} /* bloco de autoria */
+  #sb .sbnav{flex:1 1 auto !important;overflow-y:auto !important;min-height:0}
+  #sb .ni{padding:7px 10px !important;font-size:12.5px}
+  #sb .sbs{margin-bottom:6px !important}
+  #sb .sbsl{margin-top:4px !important;margin-bottom:4px !important}
+  #sb .sbbot{padding:8px 12px !important}
+  #sb .sbbot .mw{padding:8px 10px !important}
+  /* topbar mais baixo p/ aproveitar a altura reduzida */
+  #topbar{min-height:46px !important;padding:6px 12px !important}
+}
 </style>
 <!-- FLOW-PWA:end -->
 `;
@@ -102,7 +117,12 @@ try{
   if(window.Chart){
     var _p=(Chart.defaults.plugins=Chart.defaults.plugins||{});
     var _dl=(_p.datalabels=_p.datalabels||{});
-    _dl.display=function(ctx){return (ctx.chart && ctx.chart.width||0) > 460;};
+    // só mostra o rótulo quando cada categoria tem largura suficiente p/ não cortar
+    _dl.display=function(ctx){
+      var ch=ctx.chart; if(!ch) return true;
+      var n=(ch.data&&ch.data.labels&&ch.data.labels.length)||1;
+      return (ch.width/n) > 64;
+    };
   }
 }catch(e){}
 function flowToggleMenu(){var s=document.getElementById('sb'),b=document.getElementById('flowBackdrop');
