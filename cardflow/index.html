@@ -3166,106 +3166,28 @@ function gerarRelatorioIA(){
     +'options:{indexAxis:"y",responsive:true,plugins:{legend:{labels:{boxWidth:12,font:{size:11}}},tooltip:{callbacks:{label:function(c){return" "+c.dataset.label+": "+brlTt(c.raw);}}}},scales:{x:{stacked:true,ticks:{callback:function(v){return brlTt(v);}},grid:{color:"rgba(0,0,0,.05)"}},y:{stacked:true,grid:{display:false}}}}})'
     +'})();'
     +'<\/script>'
-    +'
-<!-- FLOW-PWA-JS:start -->
-<script>
-// Em telas estreitas, oculta rótulos de valor sobre os gráficos (evita sobreposição).
-// O valor continua acessível ao tocar na barra/ponto. Reaparece em telas largas (ex.: horizontal).
-try{
-  if(window.Chart){
-    var _p=(Chart.defaults.plugins=Chart.defaults.plugins||{});
-    var _dl=(_p.datalabels=_p.datalabels||{});
-    // só mostra o rótulo quando cada categoria tem largura suficiente p/ não cortar
-    _dl.display=function(ctx){
-      var ch=ctx.chart; if(!ch) return true;
-      var n=(ch.data&&ch.data.labels&&ch.data.labels.length)||1;
-      return (ch.width/n) > 64;
-    };
-  }
-}catch(e){}
-function flowToggleMenu(){var s=document.getElementById('sb'),b=document.getElementById('flowBackdrop');
-  if(!s)return;s.classList.toggle('open');if(b)b.classList.toggle('show');}
-function flowCloseMenu(){var s=document.getElementById('sb'),b=document.getElementById('flowBackdrop');
-  if(s)s.classList.remove('open');if(b)b.classList.remove('show');}
-
-/* ===== Compartilhar PDF (celular) ===== */
-// Copia as regras de @media print do próprio app para o clone (folha branca, igual à impressão).
-function flowActivatePrintCSS(doc){
-  var css='';
-  for(var i=0;i<document.styleSheets.length;i++){
-    var rules; try{rules=document.styleSheets[i].cssRules;}catch(e){continue;}
-    if(!rules)continue;
-    for(var j=0;j<rules.length;j++){
-      var r=rules[j];
-      if(r.type===CSSRule.MEDIA_RULE && /print/.test(r.media.mediaText)){
-        for(var k=0;k<r.cssRules.length;k++) css+=r.cssRules[k].cssText+'\n';
-      }
-    }
-  }
-  // largura tipo A4 p/ a captura encher a página
-  css+='.ppg{width:760px !important;max-width:none !important;margin:0 auto !important;padding:26px !important;background:#fff !important}';
-  var st=doc.createElement('style'); st.textContent=css; doc.head.appendChild(st);
-}
-async function flowSharePDF(){
-  var btn=document.querySelector('[data-flow-share]'); var orig=btn?btn.innerHTML:'';
-  try{
-    var JspdfCtor=(window.jspdf&&window.jspdf.jsPDF)||window.jsPDF;
-    if(!JspdfCtor||typeof html2canvas==='undefined'){alert('Bibliotecas de PDF ainda carregando. Tente de novo em instantes.');return;}
-    var pages=document.querySelectorAll('#cnt .ppg');
-    if(!pages.length){alert('Abra o Relatório primeiro.');return;}
-    if(btn){btn.disabled=true;btn.textContent='Gerando PDF…';}
-    var pdf=new JspdfCtor({orientation:'portrait',unit:'pt',format:'a4'});
-    var W=pdf.internal.pageSize.getWidth(), H=pdf.internal.pageSize.getHeight();
-    for(var i=0;i<pages.length;i++){
-      var canvas=await html2canvas(pages[i],{scale:2,backgroundColor:'#ffffff',useCORS:true,windowWidth:820,onclone:flowActivatePrintCSS});
-      var img=canvas.toDataURL('image/jpeg',0.92);
-      var ratio=Math.min(W/canvas.width,H/canvas.height), w=canvas.width*ratio, h=canvas.height*ratio;
-      if(i>0)pdf.addPage();
-      pdf.addImage(img,'JPEG',(W-w)/2,10,w,h);
-    }
-    var blob=pdf.output('blob');
-    var file=new File([blob],'CardFlow-relatorio.pdf',{type:'application/pdf'});
-    if(navigator.canShare&&navigator.canShare({files:[file]})){
-      await navigator.share({files:[file],title:'Relatório CardFlow'});
-    }else{
-      var url=URL.createObjectURL(blob), a=document.createElement('a');
-      a.href=url; a.download=file.name; document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(function(){URL.revokeObjectURL(url);},4000);
-    }
-  }catch(e){ if(e&&e.name==='AbortError')return; console.error(e); alert('Não foi possível gerar o PDF: '+(e&&e.message||e)); }
-  finally{ if(btn){btn.disabled=false; btn.innerHTML=orig;} }
-}
-// insere o botão "Compartilhar PDF" ao lado do "Imprimir / PDF" quando o relatório é aberto
-function flowAddShareBtn(){
-  var tba=document.getElementById('tba'); if(!tba) return;
-  var printBtn=tba.querySelector('button[onclick*="doPrint"]');
-  if(!printBtn){ var ex=tba.querySelector('[data-flow-share]'); if(ex)ex.remove(); return; }
-  if(tba.querySelector('[data-flow-share]')) return;
-  var b=document.createElement('button');
-  b.className=printBtn.className; b.setAttribute('data-flow-share','1');
-  b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg> Compartilhar PDF';
-  b.onclick=flowSharePDF;
-  printBtn.parentNode.insertBefore(b, printBtn.nextSibling);
-}
-document.addEventListener('DOMContentLoaded',function(){
-  document.querySelectorAll('#sb .ni').forEach(function(n){
-    n.addEventListener('click',function(){if(window.innerWidth<=820)flowCloseMenu();});});
-  var cnt=document.getElementById('cnt');
-  if(cnt&&window.MutationObserver){
-    new MutationObserver(flowAddShareBtn).observe(cnt,{childList:true});
-  }
-});
-if('serviceWorker' in navigator){window.addEventListener('load',function(){
-  navigator.serviceWorker.register('service-worker.js').catch(function(e){console.warn('SW:',e);});});}
-</script>
-<!-- FLOW-PWA-JS:end -->
-<script src="flow-auth.js"></script>
-</body></html>';
+    +'</body></html>';
 
   var w=window.open('','_blank');
   if(w){w.document.write(html);w.document.close();}
   else{toast('Permita pop-ups para este arquivo e tente novamente.','w');}
 }
+
+// ===== PWA / MENU MOBILE =====
+try{
+  if(window.Chart){
+    var _p=(Chart.defaults.plugins=Chart.defaults.plugins||{});
+    var _dl=(_p.datalabels=_p.datalabels||{});
+    _dl.display=function(ctx){var ch=ctx.chart;if(!ch)return true;var n=(ch.data&&ch.data.labels&&ch.data.labels.length)||1;return(ch.width/n)>64;};
+  }
+}catch(e){}
+function flowToggleMenu(){var s=document.getElementById('sb'),b=document.getElementById('flowBackdrop');if(!s)return;s.classList.toggle('open');if(b)b.classList.toggle('show');}
+function flowCloseMenu(){var s=document.getElementById('sb'),b=document.getElementById('flowBackdrop');if(s)s.classList.remove('open');if(b)b.classList.remove('show');}
+function flowActivatePrintCSS(doc){var css='';for(var i=0;i<document.styleSheets.length;i++){var rules;try{rules=document.styleSheets[i].cssRules;}catch(e){continue;}if(!rules)continue;for(var j=0;j<rules.length;j++){var r=rules[j];if(r.type===CSSRule.MEDIA_RULE&&/print/.test(r.media.mediaText)){for(var k=0;k<r.cssRules.length;k++)css+=r.cssRules[k].cssText+'\n';}}}css+='.ppg{width:760px !important;max-width:none !important;margin:0 auto !important;padding:26px !important;background:#fff !important}';var st=doc.createElement('style');st.textContent=css;doc.head.appendChild(st);}
+async function flowSharePDF(){var btn=document.querySelector('[data-flow-share]');var orig=btn?btn.innerHTML:'';try{var JspdfCtor=(window.jspdf&&window.jspdf.jsPDF)||window.jsPDF;if(!JspdfCtor||typeof html2canvas==='undefined'){alert('Bibliotecas de PDF ainda carregando. Tente de novo em instantes.');return;}var pages=document.querySelectorAll('#cnt .ppg');if(!pages.length){alert('Abra o Relatório primeiro.');return;}if(btn){btn.disabled=true;btn.textContent='Gerando PDF…';}var pdf=new JspdfCtor({orientation:'portrait',unit:'pt',format:'a4'});var W=pdf.internal.pageSize.getWidth(),H=pdf.internal.pageSize.getHeight();for(var i=0;i<pages.length;i++){var canvas=await html2canvas(pages[i],{scale:2,backgroundColor:'#ffffff',useCORS:true,windowWidth:820,onclone:flowActivatePrintCSS});var img=canvas.toDataURL('image/jpeg',0.92);var ratio=Math.min(W/canvas.width,H/canvas.height),w=canvas.width*ratio,h=canvas.height*ratio;if(i>0)pdf.addPage();pdf.addImage(img,'JPEG',(W-w)/2,10,w,h);}var blob=pdf.output('blob');var file=new File([blob],'CardFlow-relatorio.pdf',{type:'application/pdf'});if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Relatório CardFlow'});}else{var url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=file.name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},4000);}}catch(e){if(e&&e.name==='AbortError')return;console.error(e);alert('Não foi possível gerar o PDF: '+(e&&e.message||e));}finally{if(btn){btn.disabled=false;btn.innerHTML=orig;}}}
+function flowAddShareBtn(){var tba=document.getElementById('tba');if(!tba)return;var printBtn=tba.querySelector('button[onclick*="doPrint"]');if(!printBtn){var ex=tba.querySelector('[data-flow-share]');if(ex)ex.remove();return;}if(tba.querySelector('[data-flow-share]'))return;var b=document.createElement('button');b.className=printBtn.className;b.setAttribute('data-flow-share','1');b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg> Compartilhar PDF';b.onclick=flowSharePDF;printBtn.parentNode.insertBefore(b,printBtn.nextSibling);}
+document.addEventListener('DOMContentLoaded',function(){document.querySelectorAll('#sb .ni').forEach(function(n){n.addEventListener('click',function(){if(window.innerWidth<=820)flowCloseMenu();});});var cnt=document.getElementById('cnt');if(cnt&&window.MutationObserver){new MutationObserver(flowAddShareBtn).observe(cnt,{childList:true});}});
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('service-worker.js').catch(function(e){console.warn('SW:',e);});});}
 
 function gerarPromptExtracaoPDF(){
   var cartoes=S.c.length?S.c.map(function(c){return c.nome;}).join(', '):'(nenhum cadastrado)';
@@ -4077,5 +3999,6 @@ function init(){
 
 document.addEventListener('DOMContentLoaded',init);
 </script>
+<script src="flow-auth.js"></script>
 </body>
 </html>
