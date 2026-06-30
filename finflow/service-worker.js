@@ -1,6 +1,6 @@
 // FinFlow PWA — service worker
 // Estratégia: cache-first para a "casca" do app; runtime cache para fontes Google.
-const CACHE = 'finflow-v6';
+const CACHE = 'finflow-v7';
 
 const APP_SHELL = [
   './',
@@ -10,6 +10,8 @@ const APP_SHELL = [
   './libs/xlsx.full.min.js',
   './libs/papaparse.min.js',
   './libs/chartjs-plugin-datalabels.min.js',
+  './libs/jspdf.umd.min.js',
+  './libs/html2canvas.min.js',
   './icons/finflow-192.png',
   './icons/finflow-512.png'
 ];
